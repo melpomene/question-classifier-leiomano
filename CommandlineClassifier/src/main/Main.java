@@ -1,5 +1,6 @@
 package main;
 import java.io.File;
+import java.io.FileNotFoundException;
 
 import weka.core.Attribute;
 import weka.core.DenseInstance;
@@ -11,8 +12,11 @@ import weka.classifiers.misc.SerializedClassifier;
 import wekaglue.*;
 
 public class Main {
-	public static String MODEL = "/Users/christopherkack/Documents/Skola/intelligentasystem/weka_models/string_kernel_multiclass.model";
-	public static String XRFF = "/Users/christopherkack/Documents/Skola/intelligentasystem/trainingset_stringkernel.xrff";
+	//public static String MODEL =  System.getProperty("user.dir") + "/string_kernel_multiclass.model";
+	//public static String XRFF =  System.getProperty("user.dir") + "/trainingset_stringkernel.xrff";
+	public static String MODEL =  System.getProperty("user.dir") +"/../../quizkampen/models/quizkampen_stringkernel.model";
+	public static String XRFF =  System.getProperty("user.dir") +"/../../quizkampen/quizkampen.xrff";
+	
 	/**
 	 * @param args
 	 */
@@ -21,11 +25,15 @@ public class Main {
 			System.out.println("Please send me a question");
 			System.exit(0);
 		}
-		String question = args[0];
-		for (String q : args) {
-			System.out.println(q);
+		String question;
+		if (args.length == 3) {
+			System.out.println();
+			Main.MODEL = System.getProperty("user.dir") +"/" +args[0];
+			Main.XRFF = System.getProperty("user.dir") +"/" +args[1];
+			question = args[2];
+		}else {
+			question = args[0];
 		}
-		System.out.println(question);
 		
 		try {
 			System.out.println(classify(question));
@@ -39,7 +47,9 @@ public class Main {
 	
 	public static String classify(String question) throws Exception {
 		 WekaGlue wekaglue = new WekaGlue();
+		 
 		 wekaglue.create(MODEL,XRFF);
+		
 		 String[] q = new String[1];
 		 q[0] = question;
 		 return wekaglue.classify(q);

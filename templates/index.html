@@ -75,6 +75,18 @@
   <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.2/jquery-ui.min.js" type="text/javascript"></script>
   
   <script>
+function getUrlVars()
+{
+    var vars = [], hash;
+    var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+    for(var i = 0; i < hashes.length; i++)
+    {
+        hash = hashes[i].split('=');
+        vars.push(hash[0]);
+        vars[hash[0]] = hash[1];
+    }
+    return vars;
+}
 $(function() {
       $('#generate_button').click( function() 
       {
@@ -95,15 +107,20 @@ $(function() {
             background: 'white url(/static/img/loading.gif) no-repeat center'
     	  }).show().appendTo('body');
 
-          $.post("/classify", {  'question':question  }).done(function(data) {
-              // This function gets triggered when we get a 200 response. 
-              // Creates a list of the recommended apps and link to the webstore. 
-	      var html = "<center><b>Class: "+ data + "</b></center>";
-              console.log(html);
-              $('#overlay').hide();
-              $('#result').html(html);
-              $('#result').show();
-          });
+        var q = getUrlVars();
+        var quiz = "false";
+        if ("quiz" in q) {
+          quiz = q["quiz"];
+        }
+
+        $.post("/classify", {  'question':question, 'quiz':quiz }).done(function(data) {
+            // This function gets triggered when we get a 200 response. 
+            // Creates a list of the recommended apps and link to the webstore. 
+  	      var html = "<center><b>Class: "+ data + "</b></center>";
+          $('#overlay').hide();
+          $('#result').html(html);
+          $('#result').show();
+        });
       }
       );
 
@@ -130,7 +147,7 @@ $(function() {
  
     </div>
     <div class="clear" />
-      
+  <div id="overlay" />    
 
 </body>
 </html>
